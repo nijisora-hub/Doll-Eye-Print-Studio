@@ -94,7 +94,7 @@
                     <span class="text-antique-primary font-serif font-bold">I.</span>
                     <h2 class="font-serif font-bold text-antique-primary text-lg" data-i18n="step1Title">アイ画像 / 行別デザイン (最大5枚)</h2>
                 </div>
-                <p class="text-[11px] text-antique-subtext" data-i18n="multiUploadDesc">シートの横1列目＝1枚目、2列目＝2枚目…と行ごとに異なる画像を配置できます。</p>
+                <p class="text-[11px] text-antique-subtext leading-relaxed" data-i18n="multiUploadDesc">シートの横1列目＝1枚目、2列目＝2枚目…と<br>行ごとに異なる画像を配置できます。</p>
                 
                 <div class="space-y-2.5 bg-antique-bg p-3 rounded-xl border border-antique-border/70">
                     <div class="flex items-center justify-between gap-2">
@@ -148,7 +148,7 @@
                     </button>
                 </div>
 
-                <!-- Paper Size Selection (New Feature) -->
+                <!-- Paper Size Selection -->
                 <div id="paperSizeGroup" class="space-y-1 pt-1">
                     <label class="block text-xs font-medium text-antique-subtext" data-i18n="paperSizeLabel">用紙サイズ (印刷シート用):</label>
                     <div class="grid grid-cols-2 gap-2">
@@ -172,7 +172,7 @@
                         <span>16mm</span>
                         <span>30mm</span>
                     </div>
-                    <p class="text-[10px] text-antique-subtext italic mt-0.5" data-i18n="sizeNote">※白目パーツ全体の直径/幅です。印刷シートにはこのサイズに合う瞳パーツのみが並びます。</p>
+                    <p class="text-[10px] text-antique-subtext italic mt-0.5 leading-relaxed" data-i18n="sizeNote">※白目パーツ全体の直径/幅です。<br>印刷シートにはこのサイズに合う瞳パーツのみが並びます。</p>
                 </div>
 
                 <!-- Aspect Ratio (Anime Only) -->
@@ -189,15 +189,15 @@
                     </div>
                 </div>
 
-                <!-- Pupil Scale Ratio -->
+                <!-- Pupil Scale Ratio (Min changed to 20%) -->
                 <div class="space-y-1 pt-2">
                     <div class="flex justify-between items-center text-xs">
                         <span class="font-medium text-antique-subtext" data-i18n="pupilScaleLabel">アイ全体に対する瞳の比率:</span>
                         <span id="pupilScaleVal" class="font-bold text-antique-primary text-sm font-latin">65%</span>
                     </div>
-                    <input type="range" id="pupilScaleRange" min="40" max="90" step="5" value="65" oninput="updatePupilScale(this.value)" class="w-full accent-antique-primary cursor-pointer">
+                    <input type="range" id="pupilScaleRange" min="20" max="90" step="5" value="65" oninput="updatePupilScale(this.value)" class="w-full accent-antique-primary cursor-pointer">
                     <div class="flex justify-between text-[10px] text-antique-subtext px-0.5">
-                        <span data-i18n="scaleSmall">40%</span>
+                        <span data-i18n="scaleSmall">20%</span>
                         <span data-i18n="scaleStandard">65% (標準)</span>
                         <span data-i18n="scaleLarge">90%</span>
                     </div>
@@ -252,8 +252,8 @@
 
             <!-- Tab Description / Notice -->
             <div class="bg-antique-bg border border-antique-border/60 rounded-xl p-3 text-center">
-                <p id="previewNotice" class="text-xs text-antique-subtext" data-i18n="noticePrint">
-                    写真用紙（300DPI）用シート。
+                <p id="previewNotice" class="text-xs text-antique-subtext leading-relaxed" data-i18n="noticePrint">
+                    写真用紙（300DPI）用シート。<br>余白を考慮して配置されます。
                 </p>
             </div>
 
@@ -261,7 +261,7 @@
 
     </main>
 
-    <!-- Download Confirmation Modal (New Feature) -->
+    <!-- Download Confirmation Modal -->
     <div id="downloadModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-antique-card border-2 border-antique-border rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in duration-200">
             <div class="flex items-center justify-between border-b border-antique-border pb-3">
@@ -271,8 +271,8 @@
                 <button onclick="closeDownloadModal()" class="text-antique-subtext hover:text-antique-primary font-bold text-lg px-2">×</button>
             </div>
             
-            <p class="text-xs text-antique-subtext" data-i18n="modalDesc">
-                現在表示中のプレビュー画像を保存します。ファイル名を確認または変更してください。
+            <p class="text-xs text-antique-subtext leading-relaxed" data-i18n="modalDesc">
+                現在表示中のプレビュー画像を保存します。<br>ファイル名を確認または変更してください。
             </p>
 
             <div class="space-y-1">
@@ -320,7 +320,7 @@
             ja: {
                 appTitle: "Doll Eye Print Studio",
                 step1Title: "アイ画像 / 行別デザイン (最大5枚)",
-                multiUploadDesc: "シートの横1列目＝1枚目、2列目＝2枚目…と行ごとに異なる画像を配置できます。",
+                multiUploadDesc: "シートの横1列目＝1枚目、2列目＝2枚目…と<br>行ごとに異なる画像を配置できます。",
                 row1Label: "1列目 (1枚目)",
                 row2Label: "2列目 (2枚目)",
                 row3Label: "3列目 (3枚目)",
@@ -332,10 +332,10 @@
                 shapeAnime: "アニメアイ (楕円)",
                 paperSizeLabel: "用紙サイズ (印刷シート用):",
                 eyeSizeLabel: "白目を含めたアイ全体の直径/幅:",
-                sizeNote: "※白目パーツ全体の直径/幅です。印刷シートにはこのサイズに合う瞳パーツのみが並びます。",
+                sizeNote: "※白目パーツ全体の直径/幅です。<br>印刷シートにはこのサイズに合う瞳パーツのみが並びます。",
                 aspectRatioLabel: "瞳パーツの縦横比率 (縦長度):",
                 pupilScaleLabel: "アイ全体に対する瞳の比率:",
-                scaleSmall: "40%",
+                scaleSmall: "20%",
                 scaleStandard: "65%",
                 scaleLarge: "90%",
                 centerDotLabel: "テンプレートの中心ガイド線(点線)",
@@ -344,12 +344,12 @@
                 tabPrint: "印刷シート",
                 tabFitting: "白目装着イメージ",
                 tabTemplate: "枠のみテンプレート",
-                noticePrint: "写真用紙（300DPI）用シート。余白を考慮して配置されます。",
+                noticePrint: "写真用紙（300DPI）用シート。<br>余白を考慮して配置されます。",
                 noticeFitting: "白目パーツに瞳をはめ込んだ際のプレビューです。",
-                noticeTemplate: "テンプレートに描き込んで保存した画像をそのままアップロードすると、縦長比率にぴったり合わせてアイとして反映されます。",
+                noticeTemplate: "テンプレートに描き込んで保存した画像をそのままアップロードすると、<br>縦長比率にぴったり合わせてアイとして反映されます。",
                 footerText: "Doll Eye Print Studio ✦ Craft & Create for Your BJD / Anime Dolls",
                 modalTitle: "ダウンロード確認",
-                modalDesc: "現在表示中のプレビュー画像を保存します。ファイル名を確認または変更してください。",
+                modalDesc: "現在表示中のプレビュー画像を保存します。<br>ファイル名を確認または変更してください。",
                 filenameLabel: "ファイル名:",
                 modalCancel: "キャンセル",
                 modalConfirm: "保存を実行する"
@@ -357,7 +357,7 @@
             en: {
                 appTitle: "Doll Eye Print Studio",
                 step1Title: "Eye Image / Row Designs (Max 5)",
-                multiUploadDesc: "Assign different images per row: Row 1 = Image 1, Row 2 = Image 2, etc.",
+                multiUploadDesc: "Assign different images per row:<br>Row 1 = Image 1, Row 2 = Image 2, etc.",
                 row1Label: "Row 1 (Img 1)",
                 row2Label: "Row 2 (Img 2)",
                 row3Label: "Row 3 (Img 3)",
@@ -369,10 +369,10 @@
                 shapeAnime: "Anime Eye (Oval)",
                 paperSizeLabel: "Paper Size (For Print Sheet):",
                 eyeSizeLabel: "Total Eye Diameter / Width (incl. Sclera):",
-                sizeNote: "*Print sheet contains only pupil parts matching this specified overall eye size.",
+                sizeNote: "*Print sheet contains only pupil parts<br>matching this specified overall eye size.",
                 aspectRatioLabel: "Pupil Aspect Ratio (Vertical):",
                 pupilScaleLabel: "Pupil-to-Eye Ratio:",
-                scaleSmall: "40%",
+                scaleSmall: "20%",
                 scaleStandard: "65%",
                 scaleLarge: "90%",
                 centerDotLabel: "Template Center Guide Lines (Dotted)",
@@ -381,12 +381,12 @@
                 tabPrint: "Print Sheet",
                 tabFitting: "Sclera Fitting View",
                 tabTemplate: "Outline Template",
-                noticePrint: "Photo paper sheet (300DPI). Centered with safe margins.",
+                noticePrint: "Photo paper sheet (300DPI).<br>Centered with safe margins.",
                 noticeFitting: "Fitting preview showing the pupil set inside the white sclera base.",
-                noticeTemplate: "Upload your edited template image directly to match the exact proportion and size.",
+                noticeTemplate: "Upload your edited template image directly<br>to match the exact proportion and size.",
                 footerText: "Doll Eye Print Studio ✦ Craft & Create for Your BJD / Anime Dolls",
                 modalTitle: "Download Confirmation",
-                modalDesc: "Save the current preview image. Please check or edit the filename.",
+                modalDesc: "Save the current preview image.<br>Please check or edit the filename.",
                 filenameLabel: "Filename:",
                 modalCancel: "Cancel",
                 modalConfirm: "Execute Download"
@@ -448,7 +448,7 @@
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (dict[key]) {
-                    el.textContent = dict[key];
+                    el.innerHTML = dict[key]; // innerHTMLに変更して<br>を有効化
                 }
             });
             updateNoticeText();
@@ -457,9 +457,9 @@
         function updateNoticeText() {
             const noticeEl = document.getElementById('previewNotice');
             const dict = i18n[currentLang];
-            if (currentTab === 'print') noticeEl.textContent = dict.noticePrint;
+            if (currentTab === 'print') noticeEl.innerHTML = dict.noticePrint;
             else if (currentTab === 'fitting') noticeEl.textContent = dict.noticeFitting;
-            else if (currentTab === 'template') noticeEl.textContent = dict.noticeTemplate;
+            else if (currentTab === 'template') noticeEl.innerHTML = dict.noticeTemplate;
         }
 
         function setSampleColor(colorHex) {
@@ -546,7 +546,6 @@
             tFitting.className = tab === 'fitting' ? activeClass : inactiveClass;
             tTemplate.className = tab === 'template' ? activeClass : inactiveClass;
 
-            // 用紙サイズ選択は「印刷シート」タブの時のみ有効にする
             if (tab === 'print') {
                 paperSizeGroup.classList.remove('hidden');
             } else {
@@ -689,10 +688,8 @@
             return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
         }
 
-        // Print Sheet (Supports L-size or Hagaki-size)
         function drawPrintSheet(ctx, canvas, dpi) {
             const mmToPx = dpi / 25.4;
-            // Dimensions: L-size = 89 x 127 mm, Hagaki = 100 x 148 mm
             let widthMm = currentPaperSize === 'hagaki' ? 100 : 89;
             let heightMm = currentPaperSize === 'hagaki' ? 148 : 127;
 
@@ -702,7 +699,6 @@
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Ruler at top right
             const rulerX = canvas.width - (22 * mmToPx);
             const rulerY = 10 * mmToPx;
             const rulerW = 10 * mmToPx;
@@ -867,10 +863,8 @@
             ctx.fillText(subNote, cx, height - 90);
         }
 
-        // --- Download Modal Logic ---
         function openDownloadModal() {
             const renderCanvas = document.getElementById('renderCanvas');
-            // プレビューの再レンダリング
             if (currentTab === 'print') {
                 drawPrintSheet(renderCanvas.getContext('2d'), renderCanvas, 300);
             } else if (currentTab === 'fitting') {
@@ -879,15 +873,12 @@
                 drawTemplateView(renderCanvas.getContext('2d'), renderCanvas);
             }
 
-            // おすすめのファイル名を自動生成
             const defaultFilename = `doll-eye-${currentTab}-${currentTab === 'print' ? currentPaperSize + '-' : ''}${eyeSizeMm}mm.png`;
             document.getElementById('downloadFilenameInput').value = defaultFilename;
 
-            // モーダル内のサムネイルに画像をセット
             const modalPreviewImg = document.getElementById('modalPreviewImg');
             modalPreviewImg.src = renderCanvas.toDataURL('image/png');
 
-            // モーダルを表示
             document.getElementById('downloadModal').classList.remove('hidden');
         }
 
