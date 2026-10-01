@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doll Eye Print Studio - ドールアイ印刷工房</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Shippori+Mincho:wght@400;600;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        antique: {
+                            bg: '#fbf8f3',
+                            card: '#f4ede1',
+                            border: '#dfbf97',
+                            primary: '#872f3e',
+                            primaryHover: '#6d2430',
+                            accent: '#c59b27',
+                            text: '#4a3b32',
+                            subtext: '#7a6a5f'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Shippori Mincho"', '"Cormorant Garamond"', 'serif'],
+                        sans: ['"Zen Maru Gothic"', 'sans-serif'],
+                        latin: ['"Cormorant Garamond"', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fbf8f3;
+            color: #4a3b32;
+            font-family: 'Zen Maru Gothic', 'Shippori Mincho', sans-serif;
+        }
+        .font-serif {
+            font-family: 'Shippori Mincho', 'Cormorant Garamond', serif;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f4ede1;
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #dfbf97;
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #c59b27;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-antique-primary selection:text-white">
+
+    <!-- Header -->
+    <header class="w-full bg-antique-card border-b border-antique-border py-4 px-6 shadow-sm">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-antique-primary text-2xl font-serif">✦</span>
+                <h1 class="text-xl sm:text-2xl font-serif font-bold tracking-wider text-antique-primary" data-i18n="appTitle">
+                    Doll Eye Print Studio
+                </h1>
+                <span class="text-antique-primary text-2xl font-serif">✦</span>
+            </div>
+            
+            <!-- Language Toggle Switcher -->
+            <div class="flex items-center bg-antique-bg border-2 border-antique-border rounded-full p-1 shadow-sm cursor-pointer select-none" id="langToggleBtn" onclick="toggleLanguage()">
+                <div id="langJpTab" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 bg-antique-primary text-white shadow-sm">
+                    🇯🇵 JP
+                </div>
+                <div id="langEnTab" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 text-antique-subtext hover:text-antique-primary">
+                    🇬🇧 EN
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Controls Panel (Left) -->
+        <div class="lg:col-span-5 bg-antique-card border border-antique-border rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col gap-6 custom-scroll">
+            
+            <!-- Step 1: Eye Design / Multi-Upload (Up to 5 images) -->
+            <div class="space-y-3">
+                <div class="flex items-center gap-2 border-b border-antique-border pb-2">
+                    <span class="text-antique-primary font-serif font-bold">I.</span>
+                    <h2 class="font-serif font-bold text-antique-primary text-lg" data-i18n="step1Title">アイ画像 / 行別デザイン (最大5枚)</h2>
+                </div>
+                <p class="text-[11px] text-antique-subtext" data-i18n="multiUploadDesc">シートの横1列目＝1枚目、2列目＝2枚目…と行ごとに異なる画像を配置できます。</p>
+                
+                <div class="space-y-2.5 bg-antique-bg p-3 rounded-xl border border-antique-border/70">
+                    <!-- Row 1 to 5 uploads -->
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-bold text-antique-primary w-16 shrink-0" data-i18n="row1Label">1列目 (1枚目)</span>
+                        <input type="file" accept="image/*" onchange="handleRowImageUpload(0, this)" class="w-full text-[11px] text-antique-subtext file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-antique-primary file:text-white hover:file:bg-antique-primaryHover file:cursor-pointer cursor-pointer border border-antique-border rounded-lg p-0.5 bg-white">
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-bold text-antique-primary w-16 shrink-0" data-i18n="row2Label">2列目 (2枚目)</span>
+                        <input type="file" accept="image/*" onchange="handleRowImageUpload(1, this)" class="w-full text-[11px] text-antique-subtext file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-antique-primary file:text-white hover:file:bg-antique-primaryHover file:cursor-pointer cursor-pointer border border-antique-border rounded-lg p-0.5 bg-white">
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-bold text-antique-primary w-16 shrink-0" data-i18n="row3Label">3列目 (3枚目)</span>
+                        <input type="file" accept="image/*" onchange="handleRowImageUpload(2, this)" class="w-full text-[11px] text-antique-subtext file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-antique-primary file:text-white hover:file:bg-antique-primaryHover file:cursor-pointer cursor-pointer border border-antique-border rounded-lg p-0.5 bg-white">
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-bold text-antique-primary w-16 shrink-0" data-i18n="row4Label">4列目 (4枚目)</span>
+                        <input type="file" accept="image/*" onchange="handleRowImageUpload(3, this)" class="w-full text-[11px] text-antique-subtext file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-antique-primary file:text-white hover:file:bg-antique-primaryHover file:cursor-pointer cursor-pointer border border-antique-border rounded-lg p-0.5 bg-white">
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-bold text-antique-primary w-16 shrink-0" data-i18n="row5Label">5列目 (5枚目)</span>
+                        <input type="file" accept="image/*" onchange="handleRowImageUpload(4, this)" class="w-full text-[11px] text-antique-subtext file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-antique-primary file:text-white hover:file:bg-antique-primaryHover file:cursor-pointer cursor-pointer border border-antique-border rounded-lg p-0.5 bg-white">
+                    </div>
+                </div>
+
+                <div class="space-y-2 pt-1">
+                    <label class="block text-xs font-medium text-antique-subtext" data-i18n="sampleColorLabel">サンプルカラー選択 (画像未選択行用)</label>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="setSampleColor('#c83232')" class="sample-color-btn w-7 h-7 rounded-full bg-red-600 border-2 border-white shadow-sm hover:scale-110 transition-transform" data-color="#c83232" title="Red"></button>
+                        <button type="button" onclick="setSampleColor('#2864c8')" class="sample-color-btn w-7 h-7 rounded-full bg-blue-600 border-2 border-white shadow-sm hover:scale-110 transition-transform" data-color="#2864c8" title="Blue"></button>
+                        <button type="button" onclick="setSampleColor('#28a050')" class="sample-color-btn w-7 h-7 rounded-full bg-green-600 border-2 border-white shadow-sm hover:scale-110 transition-transform" data-color="#28a050" title="Green"></button>
+                        <button type="button" onclick="setSampleColor('#dcb932')" class="sample-color-btn w-7 h-7 rounded-full bg-yellow-500 border-2 border-white shadow-sm hover:scale-110 transition-transform" data-color="#dcb932" title="Yellow"></button>
+                        <button type="button" onclick="setSampleColor('#dc649b')" class="sample-color-btn w-7 h-7 rounded-full bg-pink-500 border-2 border-white shadow-sm hover:scale-110 transition-transform" data-color="#dc649b" title="Pink"></button>
+                        <button type="button" onclick="setSampleColor('#8c3cc8')" class="sample-color-btn w-7 h-7 rounded-full bg-purple-600 border-2 border-white shadow-sm hover:scale-110 transition-transform" data-color="#8c3cc8" title="Purple"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Shape & Size -->
+            <div class="space-y-3">
+                <div class="flex items-center gap-2 border-b border-antique-border pb-2">
+                    <span class="text-antique-primary font-serif font-bold">II.</span>
+                    <h2 class="font-serif font-bold text-antique-primary text-lg" data-i18n="step2Title">形状とサイズ指定</h2>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" id="shapeRoundBtn" onclick="setShape('round')" class="py-2.5 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm" data-i18n="shapeRound">
+                        リアルアイ (正円)
+                    </button>
+                    <button type="button" id="shapeAnimeBtn" onclick="setShape('anime')" class="py-2.5 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary" data-i18n="shapeAnime">
+                        アニメアイ (楕円)
+                    </button>
+                </div>
+
+                <div class="space-y-1 pt-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-medium text-antique-subtext" data-i18n="eyeSizeLabel">白目を含めたアイ全体の直径/幅:</span>
+                        <span id="eyeSizeVal" class="font-bold text-antique-primary text-sm font-latin">16 mm</span>
+                    </div>
+                    <input type="range" id="eyeSizeRange" min="8" max="30" step="1" value="16" oninput="updateEyeSize(this.value)" class="w-full accent-antique-primary cursor-pointer">
+                    <div class="flex justify-between text-[10px] text-antique-subtext px-0.5">
+                        <span>8mm</span>
+                        <span>16mm</span>
+                        <span>30mm</span>
+                    </div>
+                    <p class="text-[10px] text-antique-subtext italic mt-0.5" data-i18n="sizeNote">※白目パーツ全体の直径/幅です。印刷シートにはこのサイズに合う瞳パーツのみが並びます。</p>
+                </div>
+
+                <!-- Aspect Ratio (Anime Only) -->
+                <div id="aspectRatioGroup" class="space-y-1 pt-2 hidden">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-medium text-antique-subtext" data-i18n="aspectRatioLabel">瞳パーツの縦横比率 (縦長度):</span>
+                        <span id="aspectRatioVal" class="font-bold text-antique-primary text-sm font-latin">135%</span>
+                    </div>
+                    <input type="range" id="aspectRatioRange" min="100" max="180" step="5" value="135" oninput="updateAspectRatio(this.value)" class="w-full accent-antique-primary cursor-pointer">
+                    <div class="flex justify-between text-[10px] text-antique-subtext px-0.5">
+                        <span>100% (正円)</span>
+                        <span>135% (標準)</span>
+                        <span>180% (極縦長)</span>
+                    </div>
+                </div>
+
+                <!-- Pupil Scale Ratio -->
+                <div class="space-y-1 pt-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-medium text-antique-subtext" data-i18n="pupilScaleLabel">アイ全体に対する瞳の比率:</span>
+                        <span id="pupilScaleVal" class="font-bold text-antique-primary text-sm font-latin">65%</span>
+                    </div>
+                    <input type="range" id="pupilScaleRange" min="40" max="90" step="5" value="65" oninput="updatePupilScale(this.value)" class="w-full accent-antique-primary cursor-pointer">
+                    <div class="flex justify-between text-[10px] text-antique-subtext px-0.5">
+                        <span data-i18n="scaleSmall">40%</span>
+                        <span data-i18n="scaleStandard">65% (標準)</span>
+                        <span data-i18n="scaleLarge">90%</span>
+                    </div>
+                </div>
+
+                <!-- Template Guides Toggles -->
+                <div class="pt-3 border-t border-antique-border/60 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label for="showCenterDotCheck" class="text-xs font-medium text-antique-subtext cursor-pointer" data-i18n="centerDotLabel">テンプレートの中心ガイド線(点線)</label>
+                        <input type="checkbox" id="showCenterDotCheck" checked onchange="toggleCenterDot(this.checked)" class="w-4 h-4 accent-antique-primary cursor-pointer rounded">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Export & Download -->
+            <div class="space-y-3 pt-2">
+                <div class="flex items-center gap-2 border-b border-antique-border pb-2">
+                    <span class="text-antique-primary font-serif font-bold">III.</span>
+                    <h2 class="font-serif font-bold text-antique-primary text-lg" data-i18n="step3Title">データダウンロード</h2>
+                </div>
+                
+                <button type="button" onclick="downloadCurrentData()" class="w-full py-3 px-4 bg-antique-primary hover:bg-antique-primaryHover text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2">
+                    <span>✦</span> <span id="downloadBtnText" data-i18n="downloadBtn">現在のプレビュー画像を保存 (PNG)</span> <span>✦</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Preview Panel (Right) -->
+        <div class="lg:col-span-7 bg-antique-card border border-antique-border rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col gap-4">
+            
+            <!-- Preview Tabs -->
+            <div class="flex flex-wrap gap-2 border-b border-antique-border pb-3">
+                <button type="button" onclick="switchTab('print')" id="tabPrintBtn" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-antique-primary text-white transition-all shadow-sm" data-i18n="tabPrint">
+                    L判印刷シート
+                </button>
+                <button type="button" onclick="switchTab('fitting')" id="tabFittingBtn" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-antique-bg text-antique-subtext border border-antique-border hover:text-antique-primary transition-all" data-i18n="tabFitting">
+                    白目装着イメージ
+                </button>
+                <button type="button" onclick="switchTab('template')" id="tabTemplateBtn" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-antique-bg text-antique-subtext border border-antique-border hover:text-antique-primary transition-all" data-i18n="tabTemplate">
+                    枠のみテンプレート
+                </button>
+            </div>
+
+            <!-- Canvas Display Area -->
+            <div class="flex-grow flex items-center justify-center bg-antique-bg border border-antique-border/80 rounded-xl p-4 min-h-[380px] sm:min-h-[460px] relative overflow-hidden">
+                <!-- Hidden work canvas -->
+                <canvas id="renderCanvas" class="hidden"></canvas>
+                <!-- Visible display canvas -->
+                <canvas id="displayCanvas" class="max-w-full max-h-[440px] object-contain shadow-md rounded border border-antique-border bg-white"></canvas>
+            </div>
+
+            <!-- Tab Description / Notice -->
+            <div class="bg-antique-bg border border-antique-border/60 rounded-xl p-3 text-center">
+                <p id="previewNotice" class="text-xs text-antique-subtext" data-i18n="noticePrint">
+                    L判写真用紙（89×127mm / 300DPI）用シート。
+                </p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full bg-antique-card border-t border-antique-border py-4 px-6 text-center text-xs text-antique-subtext">
+        <p data-i18n="footerText">Doll Eye Print Studio ✦ Craft & Create for Your BJD / Anime Dolls</p>
+    </footer>
+
+    <!-- Script Application Logic -->
+    <script>
+        // --- State Management ---
+        let currentLang = 'ja';
+        let currentTab = 'print';
+        let currentShape = 'round'; // 'round' or 'anime'
+        let eyeSizeMm = 16;
+        let aspectRatio = 135; 
+        let pupilScale = 65;  
+        let showCenterDot = true;
+        let sampleColor = '#c83232';
+        let rowImages = [null, null, null, null, null]; // Up to 5 row images
+
+        const FIXED_ANIME_SCLERA_RATIO = 1.35; 
+
+        const i18n = {
+            ja: {
+                appTitle: "Doll Eye Print Studio",
+                step1Title: "アイ画像 / 行別デザイン (最大5枚)",
+                multiUploadDesc: "シートの横1列目＝1枚目、2列目＝2枚目…と行ごとに異なる画像を配置できます。",
+                row1Label: "1列目 (1枚目)",
+                row2Label: "2列目 (2枚目)",
+                row3Label: "3列目 (3枚目)",
+                row4Label: "4列目 (4枚目)",
+                row5Label: "5列目 (5枚目)",
+                sampleColorLabel: "サンプルカラー選択 (画像未選択行用)",
+                step2Title: "形状とサイズ指定",
+                shapeRound: "リアルアイ (正円)",
+                shapeAnime: "アニメアイ (楕円)",
+                eyeSizeLabel: "白目を含めたアイ全体の直径/幅:",
+                sizeNote: "※白目パーツ全体の直径/幅です。印刷シートにはこのサイズに合う瞳パーツのみが並びます。",
+                aspectRatioLabel: "瞳パーツの縦横比率 (縦長度):",
+                pupilScaleLabel: "アイ全体に対する瞳の比率:",
+                scaleSmall: "40%",
+                scaleStandard: "65%",
+                scaleLarge: "90%",
+                centerDotLabel: "テンプレートの中心ガイド線(点線)",
+                step3Title: "データダウンロード",
+                downloadBtn: "現在のプレビュー画像を保存 (PNG)",
+                tabPrint: "L判印刷シート",
+                tabFitting: "白目装着イメージ",
+                tabTemplate: "枠のみテンプレート",
+                noticePrint: "L判写真用紙（89×127mm / 300DPI）",
+                noticeFitting: "白目パーツに瞳をはめ込んだ際のプレビューです。",
+                noticeTemplate: "テンプレートに描き込んで保存した画像をそのままアップロードすると、縦長比率にぴったり合わせてアイとして反映されます。",
+                footerText: "Doll Eye Print Studio ✦ Craft & Create for Your BJD / Anime Dolls"
+            },
+            en: {
+                appTitle: "Doll Eye Print Studio",
+                step1Title: "Eye Image / Row Designs (Max 5)",
+                multiUploadDesc: "Assign different images per row: Row 1 = Image 1, Row 2 = Image 2, etc.",
+                row1Label: "Row 1 (Img 1)",
+                row2Label: "Row 2 (Img 2)",
+                row3Label: "Row 3 (Img 3)",
+                row4Label: "Row 4 (Img 4)",
+                row5Label: "Row 5 (Img 5)",
+                sampleColorLabel: "Sample Color (For rows without images)",
+                step2Title: "Shape & Size Specifications",
+                shapeRound: "Realistic Eye (Round)",
+                shapeAnime: "Anime Eye (Oval)",
+                eyeSizeLabel: "Total Eye Diameter / Width (incl. Sclera):",
+                sizeNote: "*Print sheet contains only pupil parts matching this specified overall eye size.",
+                aspectRatioLabel: "Pupil Aspect Ratio (Vertical):",
+                pupilScaleLabel: "Pupil-to-Eye Ratio:",
+                scaleSmall: "40%",
+                scaleStandard: "65%",
+                scaleLarge: "90%",
+                centerDotLabel: "Template Center Guide Lines (Dotted)",
+                step3Title: "Export & Download",
+                downloadBtn: "Download Current Preview (PNG)",
+                tabPrint: "L-Size Print Sheet",
+                tabFitting: "Sclera Fitting View",
+                tabTemplate: "Outline Template",
+                noticePrint: "L-size photo paper sheet (89x127mm / 300DPI). Centered with safe margins away from the top-right ruler.",
+                noticeFitting: "Fitting preview showing the pupil set inside the white sclera base.",
+                noticeTemplate: "Upload your edited template image directly to match the exact proportion and size.",
+                footerText: "Doll Eye Print Studio ✦ Craft & Create for Your BJD / Anime Dolls"
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initSampleColorButtons();
+            updateUIStrings();
+            renderPreview();
+        });
+
+        function handleRowImageUpload(rowIndex, input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        rowImages[rowIndex] = img;
+                        renderPreview();
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                rowImages[rowIndex] = null;
+                renderPreview();
+            }
+        }
+
+        function initSampleColorButtons() {
+            const btns = document.querySelectorAll('.sample-color-btn');
+            btns.forEach(btn => {
+                if (btn.getAttribute('data-color') === sampleColor) {
+                    btn.classList.add('ring-4', 'ring-antique-primary', 'scale-110');
+                }
+            });
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ja' ? 'en' : 'ja';
+            const jpTab = document.getElementById('langJpTab');
+            const enTab = document.getElementById('langEnTab');
+            
+            if (currentLang === 'en') {
+                jpTab.className = "px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 text-antique-subtext hover:text-antique-primary";
+                enTab.className = "px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 bg-antique-primary text-white shadow-sm";
+            } else {
+                jpTab.className = "px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 bg-antique-primary text-white shadow-sm";
+                enTab.className = "px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-300 text-antique-subtext hover:text-antique-primary";
+            }
+            updateUIStrings();
+            renderPreview();
+        }
+
+        function updateUIStrings() {
+            const dict = i18n[currentLang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.textContent = dict[key];
+                }
+            });
+            updateNoticeText();
+        }
+
+        function updateNoticeText() {
+            const noticeEl = document.getElementById('previewNotice');
+            const dict = i18n[currentLang];
+            if (currentTab === 'print') noticeEl.textContent = dict.noticePrint;
+            else if (currentTab === 'fitting') noticeEl.textContent = dict.noticeFitting;
+            else if (currentTab === 'template') noticeEl.textContent = dict.noticeTemplate;
+        }
+
+        function setSampleColor(colorHex) {
+            sampleColor = colorHex;
+            document.querySelectorAll('.sample-color-btn').forEach(btn => {
+                if (btn.getAttribute('data-color') === colorHex) {
+                    btn.classList.add('ring-4', 'ring-antique-primary', 'scale-110');
+                } else {
+                    btn.classList.remove('ring-4', 'ring-antique-primary', 'scale-110');
+                }
+            });
+            renderPreview();
+        }
+
+        function setShape(shape) {
+            currentShape = shape;
+            const roundBtn = document.getElementById('shapeRoundBtn');
+            const animeBtn = document.getElementById('shapeAnimeBtn');
+            const aspectGroup = document.getElementById('aspectRatioGroup');
+
+            if (shape === 'round') {
+                roundBtn.className = "py-2.5 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm";
+                animeBtn.className = "py-2.5 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary";
+                aspectGroup.classList.add('hidden');
+            } else {
+                animeBtn.className = "py-2.5 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm";
+                roundBtn.className = "py-2.5 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary";
+                aspectGroup.classList.remove('hidden');
+            }
+            renderPreview();
+        }
+
+        function updateEyeSize(val) {
+            eyeSizeMm = parseInt(val);
+            document.getElementById('eyeSizeVal').textContent = eyeSizeMm + " mm";
+            renderPreview();
+        }
+
+        function updateAspectRatio(val) {
+            aspectRatio = parseInt(val);
+            document.getElementById('aspectRatioVal').textContent = aspectRatio + "%";
+            renderPreview();
+        }
+
+        function updatePupilScale(val) {
+            pupilScale = parseInt(val);
+            document.getElementById('pupilScaleVal').textContent = pupilScale + "%";
+            renderPreview();
+        }
+
+        function toggleCenterDot(isChecked) {
+            showCenterDot = isChecked;
+            renderPreview();
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const tPrint = document.getElementById('tabPrintBtn');
+            const tFitting = document.getElementById('tabFittingBtn');
+            const tTemplate = document.getElementById('tabTemplateBtn');
+
+            const activeClass = "px-3.5 py-2 rounded-xl text-xs font-bold bg-antique-primary text-white transition-all shadow-sm";
+            const inactiveClass = "px-3.5 py-2 rounded-xl text-xs font-bold bg-antique-bg text-antique-subtext border border-antique-border hover:text-antique-primary transition-all";
+
+            tPrint.className = tab === 'print' ? activeClass : inactiveClass;
+            tFitting.className = tab === 'fitting' ? activeClass : inactiveClass;
+            tTemplate.className = tab === 'template' ? activeClass : inactiveClass;
+
+            updateNoticeText();
+            renderPreview();
+        }
+
+        function renderPreview() {
+            const canvas = document.getElementById('renderCanvas');
+            const ctx = canvas.getContext('2d');
+
+            if (currentTab === 'print') {
+                drawLPrintSheet(ctx, canvas, 300);
+            } else if (currentTab === 'fitting') {
+                drawFittingView(ctx, canvas);
+            } else if (currentTab === 'template') {
+                drawTemplateView(ctx, canvas);
+            }
+
+            const displayCanvas = document.getElementById('displayCanvas');
+            displayCanvas.width = canvas.width;
+            displayCanvas.height = canvas.height;
+            const dCtx = displayCanvas.getContext('2d');
+            dCtx.drawImage(canvas, 0, 0);
+        }
+
+        function getPupilDimensions(outerW, outerH) {
+            const ratio = pupilScale / 100;
+            const pW = outerW * ratio;
+            const pH = currentShape === 'anime' ? pW * (aspectRatio / 100) : outerH * ratio;
+            return { w: pW, h: pH };
+        }
+
+        // Draw Pupil Graphic using specific row image if available
+        function drawPupilGraphic(ctx, cx, cy, w, h, rowIndex = 0) {
+            ctx.save();
+            ctx.beginPath();
+            if (currentShape === 'anime') {
+                ctx.ellipse(cx, cy, w/2, h/2, 0, 0, Math.PI * 2);
+            } else {
+                ctx.arc(cx, cy, w/2, 0, Math.PI * 2);
+            }
+            ctx.clip();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(cx - w/2, cy - h/2, w, h);
+
+            // Find image for this row (fallback to first available image or sample color)
+            let targetImg = rowImages[rowIndex];
+            if (!targetImg) {
+                // Fallback to image 0 if current row has none
+                targetImg = rowImages[0];
+            }
+
+            if (targetImg) {
+                const imgW = targetImg.width;
+                const imgH = targetImg.height;
+                const isTemplateRatio = (imgH > imgW * 1.25);
+
+                if (isTemplateRatio && currentShape === 'anime') {
+                    const srcX = imgW * 0.18;
+                    const srcY = imgH * 0.22;
+                    const srcW = imgW * 0.64;
+                    const srcH = imgH * 0.56;
+                    ctx.drawImage(targetImg, srcX, srcY, srcW, srcH, cx - w/2, cy - h/2, w, h);
+                } else if (currentShape === 'round' && imgH > imgW * 1.1) {
+                    const srcSize = Math.min(imgW, imgH * 0.75);
+                    const srcX = (imgW - srcSize) / 2;
+                    const srcY = (imgH - srcSize) / 2;
+                    ctx.drawImage(targetImg, srcX, srcY, srcSize, srcSize, cx - w/2, cy - h/2, w, h);
+                } else {
+                    ctx.drawImage(targetImg, cx - w/2, cy - h/2, w, h);
+                }
+            } else {
+                ctx.save();
+                ctx.translate(cx, cy);
+                const maxR = Math.max(w/2, h/2);
+
+                if (currentShape === 'round') {
+                    const grad = ctx.createRadialGradient(0, 0, maxR * 0.2, 0, 0, maxR);
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.3, sampleColor);
+                    grad.addColorStop(0.85, adjustColorBrightness(sampleColor, -40));
+                    grad.addColorStop(1, '#1a1a1a');
+
+                    ctx.beginPath();
+                    ctx.arc(0, 0, w/2, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.arc(0, 0, maxR * 0.35, 0, Math.PI * 2);
+                    ctx.fillStyle = '#111111';
+                    ctx.fill();
+
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                    ctx.beginPath();
+                    ctx.arc(-w * 0.15, -h * 0.15, maxR * 0.18, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(w * 0.12, h * 0.12, maxR * 0.08, 0, Math.PI * 2);
+                    ctx.fill();
+
+                } else {
+                    const grad = ctx.createLinearGradient(0, -h/2, 0, h/2);
+                    grad.addColorStop(0, adjustColorBrightness(sampleColor, 25));
+                    grad.addColorStop(0.5, sampleColor);
+                    grad.addColorStop(1, adjustColorBrightness(sampleColor, -40));
+
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, w/2, h/2, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, w * 0.28, h * 0.32, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = '#0a0a0a';
+                    ctx.fill();
+
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+                    ctx.beginPath();
+                    ctx.ellipse(-w * 0.16, -h * 0.20, w * 0.14, h * 0.11, -Math.PI / 6, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.restore();
+            }
+
+            ctx.restore();
+        }
+
+        function adjustColorBrightness(hex, percent) {
+            let num = parseInt(hex.replace("#",""), 16);
+            let r = (num >> 16) + percent;
+            let g = ((num >> 8) & 0x00ff) + percent;
+            let b = (num & 0x0000ff) + percent;
+            r = Math.min(255, Math.max(0, r));
+            g = Math.min(255, Math.max(0, g));
+            b = Math.min(255, Math.max(0, b));
+            return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+        }
+
+        // 1. L-Size Print Sheet (Safe from top-right ruler, centered block)
+        function drawLPrintSheet(ctx, canvas, dpi) {
+            const mmToPx = dpi / 25.4;
+            const widthMm = 89;
+            const heightMm = 127;
+            canvas.width = Math.round(widthMm * mmToPx);
+            canvas.height = Math.round(heightMm * mmToPx);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Ruler at top right (safe zone: avoid drawing items here)
+            const rulerX = canvas.width - (22 * mmToPx);
+            const rulerY = 10 * mmToPx;
+            const rulerW = 10 * mmToPx;
+            ctx.strokeStyle = '#4a3b32';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(rulerX, rulerY, rulerW, 4 * mmToPx);
+            ctx.fillStyle = '#4a3b32';
+            ctx.font = `${Math.round(3 * mmToPx)}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText('1cm', rulerX + rulerW/2, rulerY - 2 * mmToPx);
+
+            const outerW_px = eyeSizeMm * mmToPx;
+            const outerH_px = currentShape === 'anime' ? outerW_px * FIXED_ANIME_SCLERA_RATIO : outerW_px;
+
+            const { w: pupilW, h: pupilH } = getPupilDimensions(outerW_px, outerH_px);
+
+            // Layout margins
+            const minMarginX = 3 * mmToPx;
+            const minMarginTop = 10 * mmToPx;
+            const minMarginBottom = 12 * mmToPx;
+            const spacing = 0.8 * mmToPx;
+
+            const availWidth = canvas.width - (minMarginX * 2);
+            const availHeight = canvas.height - minMarginTop - minMarginBottom;
+
+            const cols = Math.floor((availWidth + spacing) / (pupilW + spacing));
+            const rows = Math.floor((availHeight + spacing) / (pupilH + spacing));
+
+            const totalGridW = cols * pupilW + (cols - 1) * spacing;
+            const totalGridH = rows * pupilH + (rows - 1) * spacing;
+
+            const startX = minMarginX + (availWidth - totalGridW) / 2;
+            const startY = minMarginTop + (availHeight - totalGridH) / 2;
+
+            for (let r = 0; r < rows; r++) {
+                // Assign row index (0 to 4, cycling if rows exceed 5)
+                const rowIndex = r % 5;
+
+                for (let c = 0; c < cols; c++) {
+                    const curX = startX + c * (pupilW + spacing);
+                    const curY = startY + r * (pupilH + spacing);
+
+                    // Skip drawing if overlapping with the top-right ruler area
+                    const itemRight = curX + pupilW;
+                    const itemBottom = curY + pupilH;
+                    const rulerZoneLeft = rulerX - 2 * mmToPx;
+                    const rulerZoneBottom = rulerY + 8 * mmToPx;
+                    if (itemRight > rulerZoneLeft && curY < rulerZoneBottom) {
+                        continue; // Avoid overlapping ruler
+                    }
+
+                    ctx.save();
+                    drawPupilGraphic(ctx, curX + pupilW/2, curY + pupilH/2, pupilW, pupilH, rowIndex);
+
+                    ctx.strokeStyle = '#872f3e';
+                    ctx.lineWidth = 1.0;
+                    ctx.setLineDash([3, 2]);
+                    ctx.beginPath();
+                    if (currentShape === 'anime') {
+                        ctx.ellipse(curX + pupilW/2, curY + pupilH/2, pupilW/2, pupilH/2, 0, 0, Math.PI * 2);
+                    } else {
+                        ctx.arc(curX + pupilW/2, curY + pupilH/2, pupilW/2, 0, Math.PI * 2);
+                    }
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    ctx.restore();
+                }
+            }
+
+            ctx.fillStyle = '#7a6a5f';
+            ctx.font = `${Math.round(2.5 * mmToPx)}px sans-serif`;
+            ctx.textAlign = 'center';
+            const shapeStr = currentShape === 'round' ? (currentLang === 'ja' ? 'リアルアイ(正円)' : 'Realistic Eye') : (currentLang === 'ja' ? 'アニメアイ(楕円)' : 'Anime Eye(Oval)');
+            const infoText = `Doll Eye Print Studio  |  ${shapeStr} (Pupil Sheet) : ${eyeSizeMm}mm base`;
+            ctx.fillText(infoText, canvas.width / 2, canvas.height - (4 * mmToPx));
+        }
+
+        // 2. Fitting View
+        function drawFittingView(ctx, canvas) {
+            const size = 2000;
+            canvas.width = size;
+            canvas.height = size;
+
+            ctx.fillStyle = '#fbf8f3';
+            ctx.fillRect(0, 0, size, size);
+
+            const cx = size / 2;
+            const cy = size / 2;
+            const scleraRadiusX = size * 0.32;
+            const scleraRadiusY = currentShape === 'anime' ? scleraRadiusX * FIXED_ANIME_SCLERA_RATIO : scleraRadiusX;
+
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#dfbf97';
+            ctx.lineWidth = 12;
+            ctx.beginPath();
+            if (currentShape === 'anime') {
+                ctx.ellipse(cx, cy, scleraRadiusX, scleraRadiusY, 0, 0, Math.PI * 2);
+            } else {
+                ctx.arc(cx, cy, scleraRadiusX, 0, Math.PI * 2);
+            }
+            ctx.fill();
+            ctx.stroke();
+
+            const outerW = scleraRadiusX * 2;
+            const outerH = scleraRadiusY * 2;
+            const { w: pupilW, h: pupilH } = getPupilDimensions(outerW, outerH);
+            drawPupilGraphic(ctx, cx, cy, pupilW, pupilH, 0);
+
+            ctx.fillStyle = '#4a3b32';
+            ctx.font = 'bold 44px sans-serif';
+            ctx.textAlign = 'center';
+            const labelStr = currentLang === 'ja' ? `白目装着イメージ (${eyeSizeMm}mm)` : `Sclera Fitting View (${eyeSizeMm}mm)`;
+            ctx.fillText(labelStr, cx, 120);
+        }
+
+        // 3. Clean Outline Template
+        function drawTemplateView(ctx, canvas) {
+            const width = 2000;
+            const height = currentShape === 'anime' ? 2700 : 2000;
+            canvas.width = width;
+            canvas.height = height;
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+
+            const cx = width / 2;
+            const cy = height / 2;
+            const scleraRadiusX = width * 0.32;
+            const scleraRadiusY = currentShape === 'anime' ? scleraRadiusX * FIXED_ANIME_SCLERA_RATIO : scleraRadiusX;
+
+            if (showCenterDot) {
+                ctx.strokeStyle = '#c59b27';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([15, 15]);
+                
+                ctx.beginPath();
+                ctx.moveTo(cx, 180);
+                ctx.lineTo(cx, height - 180);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(180, cy);
+                ctx.lineTo(width - 180, cy);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            ctx.strokeStyle = '#872f3e';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            if (currentShape === 'anime') {
+                ctx.ellipse(cx, cy, scleraRadiusX, scleraRadiusY, 0, 0, Math.PI * 2);
+            } else {
+                ctx.arc(cx, cy, scleraRadiusX, 0, Math.PI * 2);
+            }
+            ctx.stroke();
+
+            ctx.fillStyle = '#4a3b32';
+            ctx.font = 'bold 48px sans-serif';
+            ctx.textAlign = 'center';
+            const shapeTitle = currentShape === 'round' ? (currentLang === 'ja' ? 'リアルアイ (正円)' : 'Realistic Eye (Round)') : (currentLang === 'ja' ? 'アニメアイ (楕円)' : 'Anime Eye (Oval)');
+            ctx.fillText(`${shapeTitle} : ${eyeSizeMm} mm`, cx, 130);
+
+            ctx.font = '36px sans-serif';
+            ctx.fillStyle = '#7a6a5f';
+            const subNote = currentLang === 'ja' ? '✦ カットガイド・デザイン下絵テンプレート ✦' : '✦ Cut Guide & Design Template ✦';
+            ctx.fillText(subNote, cx, height - 90);
+        }
+
+        function downloadCurrentData() {
+            const canvas = document.getElementById('renderCanvas');
+            if (currentTab === 'print') {
+                drawLPrintSheet(ctx = canvas.getContext('2d'), canvas, 300);
+            } else if (currentTab === 'fitting') {
+                drawFittingView(ctx = canvas.getContext('2d'), canvas);
+            } else if (currentTab === 'template') {
+                drawTemplateView(ctx = canvas.getContext('2d'), canvas);
+            }
+
+            const link = document.createElement('a');
+            link.download = `doll-eye-${currentTab}-${eyeSizeMm}mm.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>
