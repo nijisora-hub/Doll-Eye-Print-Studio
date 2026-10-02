@@ -189,7 +189,7 @@
                     </div>
                 </div>
 
-                <!-- Pupil Scale Ratio (Min changed to 20%) -->
+                <!-- Pupil Scale Ratio -->
                 <div class="space-y-1 pt-2">
                     <div class="flex justify-between items-center text-xs">
                         <span class="font-medium text-antique-subtext" data-i18n="pupilScaleLabel">アイ全体に対する瞳の比率:</span>
@@ -448,7 +448,7 @@
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (dict[key]) {
-                    el.innerHTML = dict[key]; // innerHTMLに変更して<br>を有効化
+                    el.innerHTML = dict[key];
                 }
             });
             updateNoticeText();
@@ -606,10 +606,13 @@
                 const isTemplateRatio = (imgH > imgW * 1.25);
 
                 if (isTemplateRatio && currentShape === 'anime') {
+                    // アニメアイ用の枠のみテンプレート画像（2000×2700px等）から中央の瞳領域を切り出し
                     const srcX = imgW * 0.18;
-                    const srcY = imgH * 0.22;
+                    const srcY = imgH * 0.18;
                     const srcW = imgW * 0.64;
-                    const srcH = imgH * 0.56;
+                    const srcH = imgH * 0.64;
+
+                    // アスペクト比補正（クロップ）は行わず、画像領域全体を描画領域(w, h)にピッタリ縦横伸縮させて描画
                     ctx.drawImage(targetImg, srcX, srcY, srcW, srcH, cx - w/2, cy - h/2, w, h);
                 } else if (currentShape === 'round' && imgH > imgW * 1.1) {
                     const srcSize = Math.min(imgW, imgH * 0.75);
@@ -617,7 +620,8 @@
                     const srcY = (imgH - srcSize) / 2;
                     ctx.drawImage(targetImg, srcX, srcY, srcSize, srcSize, cx - w/2, cy - h/2, w, h);
                 } else {
-                    ctx.drawImage(targetImg, cx - w/2, cy - h/2, w, h);
+                    // 通常の単体アイ画像の場合：四隅まで途切れることなく、楕円枠(w, h)にそのまま縦横伸縮（引き伸ばし）して描画
+                    ctx.drawImage(targetImg, 0, 0, imgW, imgH, cx - w/2, cy - h/2, w, h);
                 }
             } else {
                 ctx.save();
