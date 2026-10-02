@@ -165,19 +165,6 @@
                     </div>
                 </div>
 
-                <!-- Paper Size Selection -->
-                <div id="paperSizeGroup" class="space-y-1 pt-1">
-                    <label class="block text-xs font-medium text-antique-subtext" data-i18n="paperSizeLabel">用紙サイズ (印刷シート用):</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button type="button" id="paperLBtn" onclick="setPaperSize('L')" class="py-2 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm">
-                            L判 (89×127mm)
-                        </button>
-                        <button type="button" id="paperHagakiBtn" onclick="setPaperSize('hagaki')" class="py-2 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary">
-                            ハガキ (100×148mm)
-                        </button>
-                    </div>
-                </div>
-
                 <div class="space-y-1 pt-1">
                     <div class="flex justify-between items-center text-xs">
                         <span class="font-medium text-antique-subtext" data-i18n="eyeSizeLabel">白目を含めたアイ全体の直径/幅:</span>
@@ -236,7 +223,33 @@
                     <h2 class="font-serif font-bold text-antique-primary text-lg" data-i18n="step3Title">データダウンロード</h2>
                 </div>
                 
-                <button type="button" onclick="openDownloadModal()" class="w-full py-3 px-4 bg-antique-primary hover:bg-antique-primaryHover text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2">
+                <!-- Paper Size Selection -->
+                <div id="paperSizeGroup" class="space-y-1">
+                    <label class="block text-xs font-medium text-antique-subtext" data-i18n="paperSizeLabel">用紙サイズ (印刷シート用):</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="paperLBtn" onclick="setPaperSize('L')" class="py-2 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm">
+                            L判 (89×127mm)
+                        </button>
+                        <button type="button" id="paperHagakiBtn" onclick="setPaperSize('hagaki')" class="py-2 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary">
+                            ハガキ (100×148mm)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DPI Selection -->
+                <div id="dpiGroup" class="space-y-1">
+                    <label class="block text-xs font-medium text-antique-subtext" data-i18n="dpiLabel">印刷解像度 (DPI):</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="dpi300Btn" onclick="setDpi(300)" class="py-2 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm" data-i18n="dpi300">
+                            300 DPI (標準)
+                        </button>
+                        <button type="button" id="dpi600Btn" onclick="setDpi(600)" class="py-2 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary" data-i18n="dpi600">
+                            600 DPI (高精細)
+                        </button>
+                    </div>
+                </div>
+
+                <button type="button" onclick="openDownloadModal()" class="w-full py-3 px-4 bg-antique-primary hover:bg-antique-primaryHover text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 mt-2">
                     <span>✦</span> <span id="downloadBtnText" data-i18n="downloadBtn">現在のプレビュー画像を保存 (PNG)</span> <span>✦</span>
                 </button>
             </div>
@@ -270,7 +283,7 @@
             <!-- Tab Description / Notice -->
             <div class="bg-antique-bg border border-antique-border/60 rounded-xl p-3 text-center">
                 <p id="previewNotice" class="text-xs text-antique-subtext leading-relaxed" data-i18n="noticePrint">
-                    写真用紙（300DPI）用シート。<br>余白を考慮して配置されます。
+                    写真用紙用シート。<br>余白を考慮して配置されます。
                 </p>
             </div>
 
@@ -325,6 +338,7 @@
         let currentShape = 'round'; // Pupil/Eye shape: 'round' or 'anime'
         let scleraShape = 'round';  // Sclera shape: 'round' or 'horizontal'
         let currentPaperSize = 'L'; // 'L' (89x127mm) or 'hagaki' (100x148mm)
+        let currentDpi = 300;       // 300 or 600
         let eyeSizeMm = 16;
         let aspectRatio = 135; 
         let pupilScale = 65;  
@@ -352,7 +366,6 @@
                 scleraShapeLabel: "白目の形状:",
                 scleraRound: "正円",
                 scleraHorizontal: "横楕円 (オーバル型)",
-                paperSizeLabel: "用紙サイズ (印刷シート用):",
                 eyeSizeLabel: "白目を含めたアイ全体の直径/幅:",
                 sizeNote: "※白目パーツ全体の直径/幅です。<br>印刷シートにはこのサイズに合う瞳パーツのみが並びます。",
                 aspectRatioLabel: "瞳パーツの縦横比率 (縦長度):",
@@ -362,11 +375,15 @@
                 scaleLarge: "90%",
                 centerDotLabel: "テンプレートの中心ガイド線(点線)",
                 step3Title: "データダウンロード",
+                paperSizeLabel: "用紙サイズ (印刷シート用):",
+                dpiLabel: "印刷解像度 (DPI):",
+                dpi300: "300 DPI (標準)",
+                dpi600: "600 DPI (高精細)",
                 downloadBtn: "現在のプレビュー画像を保存 (PNG)",
                 tabPrint: "印刷シート",
                 tabFitting: "白目装着イメージ",
                 tabTemplate: "瞳のテンプレート",
-                noticePrint: "写真用紙（300DPI）用シート。<br>余白を考慮して配置されます。",
+                noticePrint: "写真用紙用シート。<br>指定された用紙サイズ・DPIに合わせて配置されます。",
                 noticeFitting: "白目パーツに瞳をはめ込んだ際のプレビューです。",
                 noticeTemplate: "瞳のテンプレートに描き込んで保存した画像をアップロードすると、<br>選択した形状・縦長比率にぴったり合わせて反映されます。",
                 footerText: "Doll Eye Print Studio ✦ Craft & Create for Your BJD / Anime Dolls",
@@ -393,7 +410,6 @@
                 scleraShapeLabel: "Sclera Base Shape:",
                 scleraRound: "Round",
                 scleraHorizontal: "Horizontal Oval",
-                paperSizeLabel: "Paper Size (For Print Sheet):",
                 eyeSizeLabel: "Total Eye Diameter / Width (incl. Sclera):",
                 sizeNote: "*Print sheet contains only pupil parts<br>matching this specified overall eye size.",
                 aspectRatioLabel: "Pupil Aspect Ratio (Vertical):",
@@ -403,11 +419,15 @@
                 scaleLarge: "90%",
                 centerDotLabel: "Template Center Guide Lines (Dotted)",
                 step3Title: "Export & Download",
+                paperSizeLabel: "Paper Size (For Print Sheet):",
+                dpiLabel: "Print Resolution (DPI):",
+                dpi300: "300 DPI (Standard)",
+                dpi600: "600 DPI (High Res)",
                 downloadBtn: "Download Current Preview (PNG)",
                 tabPrint: "Print Sheet",
                 tabFitting: "Sclera Fitting View",
                 tabTemplate: "Pupil Template",
-                noticePrint: "Photo paper sheet (300DPI).<br>Centered with safe margins.",
+                noticePrint: "Photo paper sheet.<br>Aligned according to paper size and DPI.",
                 noticeFitting: "Fitting preview showing the pupil set inside the white sclera base.",
                 noticeTemplate: "Upload your edited pupil template image directly<br>to match the exact proportion and size.",
                 footerText: "Doll Eye Print Studio ✦ Craft & Create for Your BJD / Anime Dolls",
@@ -550,6 +570,23 @@
             }
         }
 
+        function setDpi(dpi) {
+            currentDpi = parseInt(dpi);
+            const dpi300Btn = document.getElementById('dpi300Btn');
+            const dpi600Btn = document.getElementById('dpi600Btn');
+
+            if (currentDpi === 300) {
+                dpi300Btn.className = "py-2 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm";
+                dpi600Btn.className = "py-2 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary";
+            } else {
+                dpi600Btn.className = "py-2 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm";
+                dpi300Btn.className = "py-2 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary";
+            }
+            if (currentTab === 'print') {
+                renderPreview();
+            }
+        }
+
         function updateEyeSize(val) {
             eyeSizeMm = parseInt(val);
             document.getElementById('eyeSizeVal').textContent = eyeSizeMm + " mm";
@@ -579,6 +616,7 @@
             const tFitting = document.getElementById('tabFittingBtn');
             const tTemplate = document.getElementById('tabTemplateBtn');
             const paperSizeGroup = document.getElementById('paperSizeGroup');
+            const dpiGroup = document.getElementById('dpiGroup');
 
             const activeClass = "px-3.5 py-2 rounded-xl text-xs font-bold bg-antique-primary text-white transition-all shadow-sm";
             const inactiveClass = "px-3.5 py-2 rounded-xl text-xs font-bold bg-antique-bg text-antique-subtext border border-antique-border hover:text-antique-primary transition-all";
@@ -589,8 +627,10 @@
 
             if (tab === 'print') {
                 paperSizeGroup.classList.remove('hidden');
+                dpiGroup.classList.remove('hidden');
             } else {
                 paperSizeGroup.classList.add('hidden');
+                dpiGroup.classList.add('hidden');
             }
 
             updateNoticeText();
@@ -602,7 +642,7 @@
             const ctx = canvas.getContext('2d');
 
             if (currentTab === 'print') {
-                drawPrintSheet(ctx, canvas, 300);
+                drawPrintSheet(ctx, canvas, currentDpi);
             } else if (currentTab === 'fitting') {
                 drawFittingView(ctx, canvas);
             } else if (currentTab === 'template') {
@@ -745,6 +785,8 @@
 
         function drawPrintSheet(ctx, canvas, dpi) {
             const mmToPx = dpi / 25.4;
+            const scaleRatio = dpi / 300; // DPIの違いに応じた線幅補正係数
+
             let widthMm = currentPaperSize === 'hagaki' ? 100 : 89;
             let heightMm = currentPaperSize === 'hagaki' ? 148 : 127;
 
@@ -758,7 +800,7 @@
             const rulerY = 10 * mmToPx;
             const rulerW = 10 * mmToPx;
             ctx.strokeStyle = '#4a3b32';
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 1.5 * scaleRatio;
             ctx.strokeRect(rulerX, rulerY, rulerW, 4 * mmToPx);
             ctx.fillStyle = '#4a3b32';
             ctx.font = `${Math.round(3 * mmToPx)}px sans-serif`;
@@ -770,7 +812,7 @@
 
             const { w: pupilW, h: pupilH } = getPupilDimensions(outerW_px, outerH_px);
 
-            // カット線の余白（切りしろ）: 一回り広げて外側に約1.2mm追加
+            // カット線の余白（切りしろ）: 外側に約1.2mm追加
             const cutMargin = 1.2 * mmToPx;
             const cutRx = (pupilW / 2) + cutMargin;
             const cutRy = (pupilH / 2) + cutMargin;
@@ -817,10 +859,10 @@
                     // 瞳グラフィック本体の描画
                     drawPupilGraphic(ctx, cx, cy, pupilW, pupilH, rowIndex);
 
-                    // --- 余白を広げたカット線（破線ガイド）の描画 ---
+                    // --- カット線（破線ガイド）の描画 ---
                     ctx.strokeStyle = '#872f3e';
-                    ctx.lineWidth = 3.5;
-                    ctx.setLineDash([8, 5]);
+                    ctx.lineWidth = 3.5 * scaleRatio;
+                    ctx.setLineDash([8 * scaleRatio, 5 * scaleRatio]);
                     ctx.beginPath();
                     if (currentShape === 'anime') {
                         ctx.ellipse(cx, cy, cutRx, cutRy, 0, 0, Math.PI * 2);
@@ -838,7 +880,7 @@
             ctx.textAlign = 'center';
             const shapeStr = currentShape === 'round' ? 'Realistic' : 'Anime';
             const paperStr = currentPaperSize === 'hagaki' ? 'Hagaki' : 'L-Size';
-            const infoText = `Doll Eye Print Studio  |  ${paperStr} Sheet (${shapeStr}) : ${eyeSizeMm}mm base`;
+            const infoText = `Doll Eye Print Studio  |  ${paperStr} Sheet (${shapeStr}) : ${eyeSizeMm}mm base [${dpi}DPI]`;
             ctx.fillText(infoText, canvas.width / 2, canvas.height - (4 * mmToPx));
         }
 
@@ -943,14 +985,16 @@
         function openDownloadModal() {
             const renderCanvas = document.getElementById('renderCanvas');
             if (currentTab === 'print') {
-                drawPrintSheet(renderCanvas.getContext('2d'), renderCanvas, 300);
+                drawPrintSheet(renderCanvas.getContext('2d'), renderCanvas, currentDpi);
             } else if (currentTab === 'fitting') {
                 drawFittingView(renderCanvas.getContext('2d'), renderCanvas);
             } else if (currentTab === 'template') {
                 drawTemplateView(renderCanvas.getContext('2d'), renderCanvas);
             }
 
-            const defaultFilename = `doll-eye-${currentTab}-${currentTab === 'print' ? currentPaperSize + '-' : ''}${eyeSizeMm}mm.png`;
+            const paperStr = currentTab === 'print' ? `${currentPaperSize}-` : '';
+            const dpiStr = currentTab === 'print' ? `${currentDpi}dpi-` : '';
+            const defaultFilename = `doll-eye-${currentTab}-${paperStr}${dpiStr}${eyeSizeMm}mm.png`;
             document.getElementById('downloadFilenameInput').value = defaultFilename;
 
             const modalPreviewImg = document.getElementById('modalPreviewImg');
@@ -965,7 +1009,9 @@
 
         function confirmDownload() {
             const filenameInput = document.getElementById('downloadFilenameInput').value.trim();
-            const finalFilename = filenameInput || `doll-eye-${currentTab}-${eyeSizeMm}mm.png`;
+            const paperStr = currentTab === 'print' ? `${currentPaperSize}-` : '';
+            const dpiStr = currentTab === 'print' ? `${currentDpi}dpi-` : '';
+            const finalFilename = filenameInput || `doll-eye-${currentTab}-${paperStr}${dpiStr}${eyeSizeMm}mm.png`;
 
             const renderCanvas = document.getElementById('renderCanvas');
             const link = document.createElement('a');
