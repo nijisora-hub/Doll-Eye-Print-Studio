@@ -6,31 +6,6 @@
     <title>Doll Eye Print Studio - ドールアイ印刷工房</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Shippori+Mincho:wght@400;600;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        antique: {
-                            bg: '#fbf8f3',
-                            card: '#f4ede1',
-                            border: '#dfbf97',
-                            primary: '#872f3e',
-                            primaryHover: '#6d2430',
-                            accent: '#c59b27',
-                            text: '#4a3b32',
-                            subtext: '#7a6a5f'
-                        }
-                    },
-                    fontFamily: {
-                        serif: ['"Shippori Mincho"', '"Cormorant Garamond"', 'serif'],
-                        sans: ['"Zen Maru Gothic"', 'sans-serif'],
-                        latin: ['"Cormorant Garamond"', 'serif']
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         body {
             background-color: #fbf8f3;
@@ -56,6 +31,31 @@
             background: #c59b27;
         }
     </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        antique: {
+                            bg: '#fbf8f3',
+                            card: '#f4ede1',
+                            border: '#dfbf97',
+                            primary: '#872f3e',
+                            primaryHover: '#6d2430',
+                            accent: '#c59b27',
+                            text: '#4a3b32',
+                            subtext: '#7a6a5f'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Shippori Mincho"', '"Cormorant Garamond"', 'serif'],
+                        sans: ['"Zen Maru Gothic"', 'sans-serif'],
+                        latin: ['"Cormorant Garamond"', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-antique-primary selection:text-white">
 
@@ -139,13 +139,30 @@
                     <h2 class="font-serif font-bold text-antique-primary text-lg" data-i18n="step2Title">形状とサイズ指定</h2>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-2">
-                    <button type="button" id="shapeRoundBtn" onclick="setShape('round')" class="py-2.5 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm" data-i18n="shapeRound">
-                        リアルアイ (正円)
-                    </button>
-                    <button type="button" id="shapeAnimeBtn" onclick="setShape('anime')" class="py-2.5 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary" data-i18n="shapeAnime">
-                        アニメアイ (楕円)
-                    </button>
+                <!-- Pupil Shape Selection -->
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-antique-subtext" data-i18n="pupilShapeLabel">瞳の形状:</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="shapeRoundBtn" onclick="setShape('round')" class="py-2.5 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm" data-i18n="shapeRound">
+                            リアルアイ (正円)
+                        </button>
+                        <button type="button" id="shapeAnimeBtn" onclick="setShape('anime')" class="py-2.5 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary" data-i18n="shapeAnime">
+                            アニメアイ (楕円)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sclera Shape Selection -->
+                <div class="space-y-1 pt-1">
+                    <label class="block text-xs font-medium text-antique-subtext" data-i18n="scleraShapeLabel">白目の形状:</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="scleraRoundBtn" onclick="setScleraShape('round')" class="py-2 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm" data-i18n="scleraRound">
+                            正円
+                        </button>
+                        <button type="button" id="scleraHorizontalBtn" onclick="setScleraShape('horizontal')" class="py-2 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary" data-i18n="scleraHorizontal">
+                            横楕円 (オーバル型)
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Paper Size Selection -->
@@ -238,7 +255,7 @@
                     白目装着イメージ
                 </button>
                 <button type="button" onclick="switchTab('template')" id="tabTemplateBtn" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-antique-bg text-antique-subtext border border-antique-border hover:text-antique-primary transition-all" data-i18n="tabTemplate">
-                    枠のみテンプレート
+                    瞳のテンプレート
                 </button>
             </div>
 
@@ -305,7 +322,8 @@
         // --- State Management ---
         let currentLang = 'ja';
         let currentTab = 'print';
-        let currentShape = 'round'; // 'round' or 'anime'
+        let currentShape = 'round'; // Pupil/Eye shape: 'round' or 'anime'
+        let scleraShape = 'round';  // Sclera shape: 'round' or 'horizontal'
         let currentPaperSize = 'L'; // 'L' (89x127mm) or 'hagaki' (100x148mm)
         let eyeSizeMm = 16;
         let aspectRatio = 135; 
@@ -314,7 +332,7 @@
         let sampleColor = '#c83232';
         let rowImages = [null, null, null, null, null]; 
 
-        const FIXED_ANIME_SCLERA_RATIO = 1.35; 
+        const HORIZONTAL_SCLERA_RATIO = 0.75; // 横楕円白目の高さ/幅比率
 
         const i18n = {
             ja: {
@@ -328,8 +346,12 @@
                 row5Label: "5列目 (5枚目)",
                 sampleColorLabel: "サンプルカラー選択 (画像未選択行用)",
                 step2Title: "形状とサイズ指定",
+                pupilShapeLabel: "瞳の形状:",
                 shapeRound: "リアルアイ (正円)",
                 shapeAnime: "アニメアイ (楕円)",
+                scleraShapeLabel: "白目の形状:",
+                scleraRound: "正円",
+                scleraHorizontal: "横楕円 (オーバル型)",
                 paperSizeLabel: "用紙サイズ (印刷シート用):",
                 eyeSizeLabel: "白目を含めたアイ全体の直径/幅:",
                 sizeNote: "※白目パーツ全体の直径/幅です。<br>印刷シートにはこのサイズに合う瞳パーツのみが並びます。",
@@ -343,10 +365,10 @@
                 downloadBtn: "現在のプレビュー画像を保存 (PNG)",
                 tabPrint: "印刷シート",
                 tabFitting: "白目装着イメージ",
-                tabTemplate: "枠のみテンプレート",
+                tabTemplate: "瞳のテンプレート",
                 noticePrint: "写真用紙（300DPI）用シート。<br>余白を考慮して配置されます。",
                 noticeFitting: "白目パーツに瞳をはめ込んだ際のプレビューです。",
-                noticeTemplate: "テンプレートに描き込んで保存した画像をそのままアップロードすると、<br>縦長比率にぴったり合わせてアイとして反映されます。",
+                noticeTemplate: "瞳のテンプレートに描き込んで保存した画像をアップロードすると、<br>選択した形状・縦長比率にぴったり合わせて反映されます。",
                 footerText: "Doll Eye Print Studio ✦ Craft & Create for Your BJD / Anime Dolls",
                 modalTitle: "ダウンロード確認",
                 modalDesc: "現在表示中のプレビュー画像を保存します。<br>ファイル名を確認または変更してください。",
@@ -365,8 +387,12 @@
                 row5Label: "Row 5 (Img 5)",
                 sampleColorLabel: "Sample Color (For rows without images)",
                 step2Title: "Shape & Size Specifications",
+                pupilShapeLabel: "Pupil Shape:",
                 shapeRound: "Realistic Eye (Round)",
                 shapeAnime: "Anime Eye (Oval)",
+                scleraShapeLabel: "Sclera Base Shape:",
+                scleraRound: "Round",
+                scleraHorizontal: "Horizontal Oval",
                 paperSizeLabel: "Paper Size (For Print Sheet):",
                 eyeSizeLabel: "Total Eye Diameter / Width (incl. Sclera):",
                 sizeNote: "*Print sheet contains only pupil parts<br>matching this specified overall eye size.",
@@ -380,10 +406,10 @@
                 downloadBtn: "Download Current Preview (PNG)",
                 tabPrint: "Print Sheet",
                 tabFitting: "Sclera Fitting View",
-                tabTemplate: "Outline Template",
+                tabTemplate: "Pupil Template",
                 noticePrint: "Photo paper sheet (300DPI).<br>Centered with safe margins.",
                 noticeFitting: "Fitting preview showing the pupil set inside the white sclera base.",
-                noticeTemplate: "Upload your edited template image directly<br>to match the exact proportion and size.",
+                noticeTemplate: "Upload your edited pupil template image directly<br>to match the exact proportion and size.",
                 footerText: "Doll Eye Print Studio ✦ Craft & Create for Your BJD / Anime Dolls",
                 modalTitle: "Download Confirmation",
                 modalDesc: "Save the current preview image.<br>Please check or edit the filename.",
@@ -492,6 +518,21 @@
             renderPreview();
         }
 
+        function setScleraShape(shape) {
+            scleraShape = shape;
+            const roundBtn = document.getElementById('scleraRoundBtn');
+            const horizBtn = document.getElementById('scleraHorizontalBtn');
+
+            if (shape === 'round') {
+                roundBtn.className = "py-2 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm";
+                horizBtn.className = "py-2 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary";
+            } else {
+                horizBtn.className = "py-2 px-3 rounded-xl border border-antique-primary bg-antique-primary text-white text-xs font-bold transition-all shadow-sm";
+                roundBtn.className = "py-2 px-3 rounded-xl border border-antique-border bg-antique-bg text-antique-text text-xs font-bold transition-all hover:border-antique-primary";
+            }
+            renderPreview();
+        }
+
         function setPaperSize(size) {
             currentPaperSize = size;
             const lBtn = document.getElementById('paperLBtn');
@@ -577,9 +618,22 @@
 
         function getPupilDimensions(outerW, outerH) {
             const ratio = pupilScale / 100;
-            const pW = outerW * ratio;
-            const pH = currentShape === 'anime' ? pW * (aspectRatio / 100) : outerH * ratio;
-            return { w: pW, h: pH };
+            
+            if (currentShape === 'round') {
+                const maxPupilDiameter = Math.min(outerW, outerH) * ratio;
+                return { w: maxPupilDiameter, h: maxPupilDiameter };
+            } else {
+                let pW = outerW * ratio;
+                let pH = pW * (aspectRatio / 100);
+                
+                const maxPH = outerH * Math.min(ratio, 0.95);
+                if (pH > maxPH) {
+                    const scale = maxPH / pH;
+                    pW *= scale;
+                    pH *= scale;
+                }
+                return { w: pW, h: pH };
+            }
         }
 
         function drawPupilGraphic(ctx, cx, cy, w, h, rowIndex = 0) {
@@ -606,13 +660,11 @@
                 const isTemplateRatio = (imgH > imgW * 1.25);
 
                 if (isTemplateRatio && currentShape === 'anime') {
-                    // アニメアイ用の枠のみテンプレート画像（2000×2700px等）から中央の瞳領域を切り出し
                     const srcX = imgW * 0.18;
                     const srcY = imgH * 0.18;
                     const srcW = imgW * 0.64;
                     const srcH = imgH * 0.64;
 
-                    // アスペクト比補正（クロップ）は行わず、画像領域全体を描画領域(w, h)にピッタリ縦横伸縮させて描画
                     ctx.drawImage(targetImg, srcX, srcY, srcW, srcH, cx - w/2, cy - h/2, w, h);
                 } else if (currentShape === 'round' && imgH > imgW * 1.1) {
                     const srcSize = Math.min(imgW, imgH * 0.75);
@@ -620,15 +672,14 @@
                     const srcY = (imgH - srcSize) / 2;
                     ctx.drawImage(targetImg, srcX, srcY, srcSize, srcSize, cx - w/2, cy - h/2, w, h);
                 } else {
-                    // 通常の単体アイ画像の場合：四隅まで途切れることなく、楕円枠(w, h)にそのまま縦横伸縮（引き伸ばし）して描画
                     ctx.drawImage(targetImg, 0, 0, imgW, imgH, cx - w/2, cy - h/2, w, h);
                 }
             } else {
                 ctx.save();
                 ctx.translate(cx, cy);
-                const maxR = Math.max(w/2, h/2);
 
                 if (currentShape === 'round') {
+                    const maxR = w / 2;
                     const grad = ctx.createRadialGradient(0, 0, maxR * 0.2, 0, 0, maxR);
                     grad.addColorStop(0, '#ffffff');
                     grad.addColorStop(0.3, sampleColor);
@@ -636,7 +687,7 @@
                     grad.addColorStop(1, '#1a1a1a');
 
                     ctx.beginPath();
-                    ctx.arc(0, 0, w/2, 0, Math.PI * 2);
+                    ctx.arc(0, 0, maxR, 0, Math.PI * 2);
                     ctx.fillStyle = grad;
                     ctx.fill();
 
@@ -715,23 +766,32 @@
             ctx.fillText('1cm', rulerX + rulerW/2, rulerY - 2 * mmToPx);
 
             const outerW_px = eyeSizeMm * mmToPx;
-            const outerH_px = currentShape === 'anime' ? outerW_px * FIXED_ANIME_SCLERA_RATIO : outerW_px;
+            const outerH_px = scleraShape === 'horizontal' ? outerW_px * HORIZONTAL_SCLERA_RATIO : outerW_px;
 
             const { w: pupilW, h: pupilH } = getPupilDimensions(outerW_px, outerH_px);
+
+            // カット線の余白（切りしろ）: 一回り広げて外側に約1.2mm追加
+            const cutMargin = 1.2 * mmToPx;
+            const cutRx = (pupilW / 2) + cutMargin;
+            const cutRy = (pupilH / 2) + cutMargin;
 
             const minMarginX = 3 * mmToPx;
             const minMarginTop = 10 * mmToPx;
             const minMarginBottom = 12 * mmToPx;
-            const spacing = 0.8 * mmToPx;
+            const spacing = 2.0 * mmToPx; // 広げた余白に合わせてグリッド間隔を2.0mmに調整
+
+            // 全体占有領域（アイテム幅 + 切りしろ分）
+            const itemBoxW = pupilW + (cutMargin * 2);
+            const itemBoxH = pupilH + (cutMargin * 2);
 
             const availWidth = canvas.width - (minMarginX * 2);
             const availHeight = canvas.height - minMarginTop - minMarginBottom;
 
-            const cols = Math.floor((availWidth + spacing) / (pupilW + spacing));
-            const rows = Math.floor((availHeight + spacing) / (pupilH + spacing));
+            const cols = Math.floor((availWidth + spacing) / (itemBoxW + spacing));
+            const rows = Math.floor((availHeight + spacing) / (itemBoxH + spacing));
 
-            const totalGridW = cols * pupilW + (cols - 1) * spacing;
-            const totalGridH = rows * pupilH + (rows - 1) * spacing;
+            const totalGridW = cols * itemBoxW + (cols - 1) * spacing;
+            const totalGridH = rows * itemBoxH + (rows - 1) * spacing;
 
             const startX = minMarginX + (availWidth - totalGridW) / 2;
             const startY = minMarginTop + (availHeight - totalGridH) / 2;
@@ -739,28 +799,33 @@
             for (let r = 0; r < rows; r++) {
                 const rowIndex = r % 5;
                 for (let c = 0; c < cols; c++) {
-                    const curX = startX + c * (pupilW + spacing);
-                    const curY = startY + r * (pupilH + spacing);
+                    const boxX = startX + c * (itemBoxW + spacing);
+                    const boxY = startY + r * (itemBoxH + spacing);
 
-                    const itemRight = curX + pupilW;
-                    const itemBottom = curY + pupilH;
+                    // 瞳パーツの中央座標
+                    const cx = boxX + itemBoxW / 2;
+                    const cy = boxY + itemBoxH / 2;
+
+                    const itemRight = boxX + itemBoxW;
                     const rulerZoneLeft = rulerX - 2 * mmToPx;
                     const rulerZoneBottom = rulerY + 8 * mmToPx;
-                    if (itemRight > rulerZoneLeft && curY < rulerZoneBottom) {
+                    if (itemRight > rulerZoneLeft && boxY < rulerZoneBottom) {
                         continue; 
                     }
 
                     ctx.save();
-                    drawPupilGraphic(ctx, curX + pupilW/2, curY + pupilH/2, pupilW, pupilH, rowIndex);
+                    // 瞳グラフィック本体の描画
+                    drawPupilGraphic(ctx, cx, cy, pupilW, pupilH, rowIndex);
 
+                    // --- 余白を広げたカット線（破線ガイド）の描画 ---
                     ctx.strokeStyle = '#872f3e';
-                    ctx.lineWidth = 1.0;
-                    ctx.setLineDash([3, 2]);
+                    ctx.lineWidth = 3.5;
+                    ctx.setLineDash([8, 5]);
                     ctx.beginPath();
                     if (currentShape === 'anime') {
-                        ctx.ellipse(curX + pupilW/2, curY + pupilH/2, pupilW/2, pupilH/2, 0, 0, Math.PI * 2);
+                        ctx.ellipse(cx, cy, cutRx, cutRy, 0, 0, Math.PI * 2);
                     } else {
-                        ctx.arc(curX + pupilW/2, curY + pupilH/2, pupilW/2, 0, Math.PI * 2);
+                        ctx.arc(cx, cy, cutRx, 0, Math.PI * 2);
                     }
                     ctx.stroke();
                     ctx.setLineDash([]);
@@ -788,13 +853,13 @@
             const cx = size / 2;
             const cy = size / 2;
             const scleraRadiusX = size * 0.32;
-            const scleraRadiusY = currentShape === 'anime' ? scleraRadiusX * FIXED_ANIME_SCLERA_RATIO : scleraRadiusX;
+            const scleraRadiusY = scleraShape === 'horizontal' ? scleraRadiusX * HORIZONTAL_SCLERA_RATIO : scleraRadiusX;
 
             ctx.fillStyle = '#ffffff';
             ctx.strokeStyle = '#dfbf97';
             ctx.lineWidth = 12;
             ctx.beginPath();
-            if (currentShape === 'anime') {
+            if (scleraShape === 'horizontal') {
                 ctx.ellipse(cx, cy, scleraRadiusX, scleraRadiusY, 0, 0, Math.PI * 2);
             } else {
                 ctx.arc(cx, cy, scleraRadiusX, 0, Math.PI * 2);
@@ -816,7 +881,7 @@
 
         function drawTemplateView(ctx, canvas) {
             const width = 2000;
-            const height = currentShape === 'anime' ? 2700 : 2000;
+            const height = 2000;
             canvas.width = width;
             canvas.height = height;
 
@@ -825,8 +890,16 @@
 
             const cx = width / 2;
             const cy = height / 2;
-            const scleraRadiusX = width * 0.32;
-            const scleraRadiusY = currentShape === 'anime' ? scleraRadiusX * FIXED_ANIME_SCLERA_RATIO : scleraRadiusX;
+            
+            let pupilRadiusX, pupilRadiusY;
+
+            if (currentShape === 'anime') {
+                pupilRadiusX = width * 0.28;
+                pupilRadiusY = pupilRadiusX * (aspectRatio / 100);
+            } else {
+                pupilRadiusX = width * 0.30;
+                pupilRadiusY = pupilRadiusX;
+            }
 
             if (showCenterDot) {
                 ctx.strokeStyle = '#c59b27';
@@ -849,21 +922,21 @@
             ctx.lineWidth = 4;
             ctx.beginPath();
             if (currentShape === 'anime') {
-                ctx.ellipse(cx, cy, scleraRadiusX, scleraRadiusY, 0, 0, Math.PI * 2);
+                ctx.ellipse(cx, cy, pupilRadiusX, pupilRadiusY, 0, 0, Math.PI * 2);
             } else {
-                ctx.arc(cx, cy, scleraRadiusX, 0, Math.PI * 2);
+                ctx.arc(cx, cy, pupilRadiusX, 0, Math.PI * 2);
             }
             ctx.stroke();
 
             ctx.fillStyle = '#4a3b32';
             ctx.font = 'bold 48px sans-serif';
             ctx.textAlign = 'center';
-            const shapeTitle = currentShape === 'round' ? 'Realistic Eye' : 'Anime Eye';
-            ctx.fillText(`${shapeTitle} : ${eyeSizeMm} mm`, cx, 130);
+            const shapeTitle = currentShape === 'round' ? 'Realistic Pupil' : 'Anime Pupil';
+            ctx.fillText(`${shapeTitle} Template : ${eyeSizeMm} mm`, cx, 130);
 
             ctx.font = '36px sans-serif';
             ctx.fillStyle = '#7a6a5f';
-            const subNote = currentLang === 'ja' ? '✦ カットガイド・デザイン下絵テンプレート ✦' : '✦ Cut Guide & Design Template ✦';
+            const subNote = currentLang === 'ja' ? '✦ 瞳パーツ デザイン下絵テンプレート ✦' : '✦ Pupil Design Template ✦';
             ctx.fillText(subNote, cx, height - 90);
         }
 
