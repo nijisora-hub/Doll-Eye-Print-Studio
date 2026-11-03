@@ -359,6 +359,7 @@
         let sampleColor = '#c83232';
         let rowImages = new Array(10).fill(null); 
         let rowFileNames = new Array(10).fill(null); 
+        let rowImageMeta = new Array(10).fill(null); // 画像ごとの「絵の範囲」と自然な縦横比
         let pendingDownloadType = 'main';
 
         const HORIZONTAL_SCLERA_RATIO = 0.75;
@@ -506,6 +507,55 @@
             }
         }
 
+        // 画像の「絵が描かれている範囲」を検出し、その範囲と自然な縦横比を返す
+        function computeImageMeta(img) {
+            try {
+                const maxDim = 256;
+                const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+                const cw = Math.max(1, Math.round(img.width * scale));
+                const ch = Math.max(1, Math.round(img.height * scale));
+                const cvs = document.createElement('canvas');
+                cvs.width = cw; cvs.height = ch;
+                const c2 = cvs.getContext('2d');
+                c2.drawImage(img, 0, 0, cw, ch);
+                const data = c2.getImageData(0, 0, cw, ch).data;
+                const cornerAt = (x, y) => { const i = (y * cw + x) * 4; return [data[i], data[i + 1], data[i + 2], data[i + 3]]; };
+                const corners = [cornerAt(0, 0), cornerAt(cw - 1, 0), cornerAt(0, ch - 1), cornerAt(cw - 1, ch - 1)];
+                const bg = [0, 1, 2, 3].map(k => Math.round(corners.reduce((s, c) => s + c[k], 0) / 4));
+                let minX = cw, minY = ch, maxX = -1, maxY = -1;
+                for (let y = 0; y < ch; y++) {
+                    for (let x = 0; x < cw; x++) {
+                        const i = (y * cw + x) * 4;
+                        const a = data[i + 3];
+                        let content;
+                        if (bg[3] < 16) {
+                            content = a > 12; // 背景が透明なら、透明でない所が絵
+                        } else {
+                            const diff = Math.abs(data[i] - bg[0]) + Math.abs(data[i + 1] - bg[1]) + Math.abs(data[i + 2] - bg[2]);
+                            content = a > 12 && diff > 36; // 背景色と違う所が絵
+                        }
+                        if (content) {
+                            if (x < minX) minX = x;
+                            if (x > maxX) maxX = x;
+                            if (y < minY) minY = y;
+                            if (y > maxY) maxY = y;
+                        }
+                    }
+                }
+                if (maxX < 0) return null;
+                let bx = minX / scale, by = minY / scale;
+                let bw = (maxX - minX + 1) / scale, bh = (maxY - minY + 1) / scale;
+                const padX = bw * 0.02, padY = bh * 0.02;
+                bx = Math.max(0, bx - padX); by = Math.max(0, by - padY);
+                bw = Math.min(img.width - bx, bw + padX * 2);
+                bh = Math.min(img.height - by, bh + padY * 2);
+                if (bw < 4 || bh < 4) return null;
+                return { bx, by, bw, bh, aspect: bh / bw };
+            } catch (e) {
+                return null;
+            }
+        }
+
         function handleSingleImageUpload(index, input) {
             const file = input.files[0];
             if (file) {
@@ -515,6 +565,7 @@
                     const img = new Image();
                     img.onload = () => {
                         rowImages[index] = img;
+                        rowImageMeta[index] = computeImageMeta(img);
                         updateImageRowDisplay(index);
                         updateFittingImagePulldown();
                         renderPreview();
@@ -524,6 +575,7 @@
                 reader.readAsDataURL(file);
             } else {
                 rowImages[index] = null;
+                rowImageMeta[index] = null;
                 rowFileNames[index] = null;
                 updateImageRowDisplay(index);
                 updateFittingImagePulldown();
@@ -543,6 +595,7 @@
                     const img = new Image();
                     img.onload = () => {
                         rowImages[idx] = img;
+                        rowImageMeta[idx] = computeImageMeta(img);
                         loadedCount++;
                         if (loadedCount === files.length) {
                             renderImageRowsUI();
@@ -558,6 +611,7 @@
 
         function clearSingleImage(index) {
             rowImages[index] = null;
+            rowImageMeta[index] = null;
             rowFileNames[index] = null;
             const input = document.getElementById(`imageInput_${index}`);
             if (input) input.value = '';
@@ -568,6 +622,7 @@
 
         function clearAllImages() {
             rowImages = new Array(10).fill(null);
+            rowImageMeta = new Array(10).fill(null);
             rowFileNames = new Array(10).fill(null);
             renderImageRowsUI();
             renderPreview();
@@ -823,7 +878,7 @@
         }
 
         // --- Get Target Pupil Dimensions ---
-        function getPupilDimensions(outerW, outerH) {
+        function getPupilDimensions(outerW, outerH, meta = null) {
             const ratio = pupilScale / 100;
             
             if (currentShape === 'round') {
@@ -831,7 +886,13 @@
                 return { w: maxPupilDiameter, h: maxPupilDiameter };
             } else {
                 let pW = outerW * ratio;
-                let aspectFactor = getEffectiveAspectFactor();
+                let aspectFactor;
+                if (meta && meta.aspect) {
+                    // 読み込んだ画像がある場合：100%で画像本来の縦横比、0%で正円になるよう補間する
+                    aspectFactor = 1 + (meta.aspect - 1) * (aspectRatio / 100);
+                } else {
+                    aspectFactor = getEffectiveAspectFactor();
+                }
                 let pH = pW * aspectFactor;
                 
                 const maxPH = outerH * Math.min(ratio, 0.95);
@@ -889,10 +950,16 @@
                     const sy = (imgH - side) / 2;
                     ctx.drawImage(targetImg, sx, sy, side, side, cx - w / 2, cy - h / 2, w, w);
                 } else {
-                    const fitScale = 1.2;
-                    const dw = w * fitScale;
-                    const dh = h * fitScale;
-                    ctx.drawImage(targetImg, cx - dw / 2, cy - dh / 2, dw, dh);
+                    const meta = (targetImageIndex !== null) ? rowImageMeta[targetImageIndex] : null;
+                    if (meta) {
+                        // 絵の範囲を瞳パーツの枠いっぱいに描く（100%で本来の縦横比、0%で正円に変形）
+                        ctx.drawImage(targetImg, meta.bx, meta.by, meta.bw, meta.bh, cx - w / 2, cy - h / 2, w, h);
+                    } else {
+                        const fitScale = 1.2;
+                        const dw = w * fitScale;
+                        const dh = h * fitScale;
+                        ctx.drawImage(targetImg, cx - dw / 2, cy - dh / 2, dw, dh);
+                    }
                 }
             } else {
                 // Sample color procedural graphic
@@ -1021,7 +1088,22 @@
             const spacing = 1.5 * mmToPx;
             const cutMarginPx = cutMarginMm * mmToPx;
 
-            const { w: pupilW, h: pupilH } = getPupilDimensions(outerW_px, outerH_px);
+            // レイアウト用：使う画像の中で最も縦長なものに合わせて枠を決める
+            let pupilW, pupilH;
+            {
+                const activeMetas = rowImages.map((img, i) => img ? rowImageMeta[i] : null).filter(m => m);
+                if (activeMetas.length) {
+                    let best = null;
+                    activeMetas.forEach(m => {
+                        const d = getPupilDimensions(outerW_px, outerH_px, m);
+                        if (!best || d.h > best.h) best = d;
+                    });
+                    pupilW = best.w; pupilH = best.h;
+                } else {
+                    const d = getPupilDimensions(outerW_px, outerH_px, null);
+                    pupilW = d.w; pupilH = d.h;
+                }
+            }
 
             const itemBoxW = pupilW + (cutMarginPx * 2);
             const itemBoxH = pupilH + (cutMarginPx * 2);
@@ -1048,7 +1130,7 @@
                 }
 
                 const targetImg = rowImageIndex !== null ? rowImages[rowImageIndex] : null;
-                const { w: rowPupilW, h: rowPupilH } = getPupilDimensions(outerW_px, outerH_px);
+                const { w: rowPupilW, h: rowPupilH } = getPupilDimensions(outerW_px, outerH_px, rowImageIndex !== null ? rowImageMeta[rowImageIndex] : null);
                 const rowCutRx = (rowPupilW / 2) + cutMarginPx;
                 const rowCutRy = (rowPupilH / 2) + cutMarginPx;
 
@@ -1148,7 +1230,7 @@
             }
 
             const targetImg = targetIdx !== null ? rowImages[targetIdx] : null;
-            const { w: pupilW, h: pupilH } = getPupilDimensions(outerW, outerH);
+            const { w: pupilW, h: pupilH } = getPupilDimensions(outerW, outerH, targetIdx !== null ? rowImageMeta[targetIdx] : null);
 
             drawPupilGraphic(ctx, cx, cy, pupilW, pupilH, targetIdx);
 
