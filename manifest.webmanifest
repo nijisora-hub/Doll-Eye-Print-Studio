@@ -1,0 +1,13 @@
+{
+  "name": "Doll Eye Print Studio - ドールアイ印刷工房",
+  "short_name": "Doll Eye Studio",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#fbf8f3",
+  "theme_color": "#872f3e",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f440.png", "sizes": "72x72", "type": "image/png", "purpose": "any" }
+  ]
+}
