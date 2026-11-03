@@ -362,6 +362,7 @@
         let pendingDownloadType = 'main';
 
         const HORIZONTAL_SCLERA_RATIO = 0.75;
+        const FIXED_ANIME_TEMPLATE_ASPECT = 1.35; // テンプレートはデータ作成の基準なので常に固定（スライダーで変えない）
 
         const i18n = {
             ja: {
@@ -791,7 +792,7 @@
 
             if (currentShape === 'anime') {
                 pupilRadiusX = width * 0.28;
-                pupilRadiusY = pupilRadiusX * getEffectiveAspectFactor();
+                pupilRadiusY = pupilRadiusX * FIXED_ANIME_TEMPLATE_ASPECT;
             } else {
                 pupilRadiusX = width * 0.30;
                 pupilRadiusY = pupilRadiusX;
